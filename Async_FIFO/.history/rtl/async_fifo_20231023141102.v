@@ -123,7 +123,7 @@ begin
         wptr_sp2 <= wptr_sp1;
     end
 end
-// 空满判断，格雷码指针回卷后与回卷前相同的指针的高两位相反
+// 空满判断，格雷码指针回卷后与hui'juan'qian
 assign full = (wptr_gray == {~rptr_sp2[DEEPTH_BIT-1],~rptr_sp2[DEEPTH_BIT-2],rptr_sp2[DEEPTH_BIT-3:0]});
 assign empty = (rptr_gray == wptr_sp2);
 
