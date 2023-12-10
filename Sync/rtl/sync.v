@@ -1,9 +1,8 @@
 module sync 
 (
     input   wire aclk,
-    input   wire arst_n,
+    input   wire rst_n,
     input   wire bclk,
-    input   wire brst_n,
     input   wire level_in,
     input   wire pulse_in,
     output  wire level_out,
@@ -15,17 +14,17 @@ reg[1:0] level_in_bclk;
 reg[2:0] pulse_in_sync_bclk;
 reg[1:0] pulse_in_sync_aclk;
 
-always @(posedge aclk or negedge arst_n) 
+always @(posedge aclk or negedge rst_n) 
 begin
-    if (!arst_n)
+    if (!rst_n)
         pulse_in_sync <= 1'b0;
     else
-        pulse_in_sync <= (~pulse_in_sync_aclk[1])&(pulse_in || pulse_in_sync);
+        pulse_in_sync <= (~pulse_in_sync_aclk[1])&(pulse_in | pulse_in_sync);
 end
 
-always @(posedge bclk or negedge brst_n) 
+always @(posedge bclk or negedge rst_n) 
 begin
-    if (!brst_n) begin
+    if (!rst_n) begin
         pulse_in_sync_bclk <= 3'b0;
         level_in_bclk <= 2'b0;        
     end
@@ -35,9 +34,9 @@ begin
     end
 end
 
-always @(posedge aclk or negedge arst_n) 
+always @(posedge aclk or negedge rst_n) 
 begin
-    if (!arst_n)
+    if (!rst_n)
         pulse_in_sync_aclk <= 2'b0;
     else
         pulse_in_sync_aclk <= {pulse_in_sync_aclk[0],pulse_in_sync_bclk[2]};
